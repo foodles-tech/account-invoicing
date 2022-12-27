@@ -11,12 +11,15 @@ class AccountMove(models.Model):
     category_ids = fields.Many2many(
         "accounting.partner.category",
         string="Tags",
+        readonly=False,
+        store=True,
+        compute="_compute_category_ids",
         help="Tags when partner was added to the invoice.",
     )
 
-    @api.onchange("partner_id")
-    def _onchange_partner_id(self):
-        super()._onchange_partner_id()
-        self.category_ids = (
-            self.partner_id.commercial_partner_id.accounting_category_ids
-        )
+    @api.depends("partner_id")
+    def _compute_category_ids(self):
+        for rec in self:
+            rec.category_ids = (
+                rec.partner_id.commercial_partner_id.accounting_category_ids
+            )
