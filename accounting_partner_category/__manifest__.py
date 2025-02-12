@@ -8,7 +8,7 @@
         to select journal entries easley based
         on dedicated partner category
         """,
-    "version": "14.0.1.0.0",
+    "version": "17.0.1.0.0",
     "author": "Pierre Verkest, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/account-invoicing",
     "license": "AGPL-3",

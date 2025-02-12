@@ -1,7 +1,7 @@
-from odoo.tests.common import Form, SavepointCase
+from odoo.tests.common import Form, TransactionCase
 
 
-class FilterAccountMoveByPartnerCategory(SavepointCase):
+class FilterAccountMoveByPartnerCategory(TransactionCase):
     @classmethod
     def _create_invoice(cls, partner):
         invoice_form = Form(
@@ -13,7 +13,6 @@ class FilterAccountMoveByPartnerCategory(SavepointCase):
         invoice_form.partner_id = partner
         with invoice_form.invoice_line_ids.new() as line_form:
             line_form.product_id = cls.product
-            line_form.account_id = cls.income_account
         invoice = invoice_form.save()
         invoice.action_post()
         return invoice
@@ -68,18 +67,6 @@ class FilterAccountMoveByPartnerCategory(SavepointCase):
         )
         cls.product = cls.env["product.product"].create({"name": "Test product"})
 
-        cls.income_account = cls.env["account.account"].search(
-            [
-                (
-                    "user_type_id",
-                    "=",
-                    cls.env.ref("account.data_account_type_revenue").id,
-                ),
-                ("company_id", "=", cls.env.company.id),
-            ],
-            limit=1,
-        )
-
         cls.partner_1.accounting_category_ids = cls.tag_1 | cls.tag_2
         cls.partner_2.accounting_category_ids = cls.tag_3
         cls.partner_3.accounting_category_ids = cls.tag_1 | cls.tag_2 | cls.tag_3
@@ -106,7 +93,7 @@ class FilterAccountMoveByPartnerCategory(SavepointCase):
             self.assertFalse(invoice_form.category_ids)
             invoice_form.partner_id = self.partner_1
             self.assertEqual(
-                invoice_form.category_ids._get_ids(), (self.tag_1 | self.tag_2).ids
+                invoice_form.category_ids.ids, (self.tag_1 | self.tag_2).ids
             )
             invoice_form.partner_id = self.partner_4
             self.assertFalse(invoice_form.category_ids)
@@ -128,7 +115,8 @@ class FilterAccountMoveByPartnerCategory(SavepointCase):
         expected_not_present = self.invoice_p1 | self.invoice_p3
         self.assertTrue(
             set(expected.ids).issubset(set(search_result.ids)),
-            f"Expect {expected} to be subset of {search_result} which is wrong at the moment.",
+            f"Expect {expected} to be subset of {search_result} which is wrong at"
+            " the moment.",
         )
         self.assertFalse(
             set(expected_not_present.ids).issubset(set(search_result.ids)),
@@ -147,7 +135,8 @@ class FilterAccountMoveByPartnerCategory(SavepointCase):
         )
         self.assertTrue(
             set(expected.ids).issubset(set(search_result.ids)),
-            f"Expect {expected} to be subset of {search_result} which is wrong at the moment.",
+            f"Expect {expected} to be subset of {search_result} which is wrong at"
+            " the moment.",
         )
         self.assertFalse(
             set(expected_not_present.ids).issubset(set(search_result.ids)),
