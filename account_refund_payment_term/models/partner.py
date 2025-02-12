@@ -13,7 +13,8 @@ class Partner(models.Model):
         company_dependent=True,
         string="Customer refund Payment Terms",
         domain="[('company_id', 'in', [current_company_id, False])]",
-        help="This payment term will be used instead of the default one for customer refunds",
+        help="This payment term will be used instead of the default one for"
+        " customer refunds",
     )
 
     @api.model

@@ -4,7 +4,7 @@
 {
     "name": "Account refund payment term",
     "summary": "Dedicated payment terms used for refunds",
-    "version": "14.0.1.0.0",
+    "version": "17.0.1.0.0",
     "author": "Pierre Verkest, Odoo Community Association (OCA)",
     "maintainers": ["petrus-v"],
     "license": "AGPL-3",

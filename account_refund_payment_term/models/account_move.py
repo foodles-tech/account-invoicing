@@ -10,8 +10,9 @@ class AccountMove(models.Model):
 
     @api.onchange("partner_id")
     def _onchange_partner_id(self):
-        super()._onchange_partner_id()
+        result = super()._onchange_partner_id()
         for move in self.filtered(lambda move: move.move_type == "out_refund"):
             move.invoice_payment_term_id = (
                 self.partner_id.property_refund_payment_term_id
             )
+        return result
