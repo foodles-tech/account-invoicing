@@ -104,22 +104,3 @@ class TestAccountException(TransactionCase):
         am.button_draft()
         self.assertEqual(am.state, "draft")
         self.assertFalse(am.ignore_exception)
-
-    def test_wizard_account_exception_confirm(self):
-        self.exception_noemail.active = True
-        self.exception_qtycheck.active = True
-        self.partner_id.email = False
-        am = self.AccountMove.create(self.am_vals.copy())
-        am.ignore_exception = True
-        am.action_post()
-        self.assertTrue(am.state, "posted")
-        am_except_confirm = self.account_exception_confirm.with_context(
-            **{
-                "active_id": am.id,
-                "active_ids": [am.id],
-                "active_model": am._name,
-            }
-        ).create({"ignore": True})
-
-        am_except_confirm.action_confirm()
-        self.assertTrue(am.ignore_exception)

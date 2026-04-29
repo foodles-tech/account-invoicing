@@ -43,10 +43,7 @@ class AccountMove(models.Model):
 
     def button_draft(self):
         res = super().button_draft()
-        for order in self:
-            order.exception_ids = False
-            order.main_exception_id = False
-            order.ignore_exception = False
+        self.filtered("ignore_exception").write({"ignore_exception": False})
         return res
 
     @api.model
